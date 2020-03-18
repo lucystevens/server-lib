@@ -19,7 +19,7 @@ import uk.co.lukestevens.models.IEntity;
  * @author luke.stevens
  */
 @Entity
-@Table(name = "applications")
+@Table(name = "applications", schema = "core")
 public class Application extends IEntity{
 	
 	@Id
