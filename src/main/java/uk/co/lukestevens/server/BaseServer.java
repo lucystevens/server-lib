@@ -1,11 +1,19 @@
 package uk.co.lukestevens.server;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import com.google.gson.JsonObject;
+
+import spark.Request;
+import spark.Response;
 import spark.RouteImpl;
 import spark.Service;
 import spark.route.HttpMethod;
+import uk.co.lukestevens.config.annotations.AppVersion;
 import uk.co.lukestevens.logging.Logger;
 import uk.co.lukestevens.logging.LoggerFactory;
-import uk.co.lukestevens.server.models.Application;
+import uk.co.lukestevens.server.models.APIApplication;
 
 /**
  * A base server class to be used to create Spark services
@@ -14,6 +22,7 @@ import uk.co.lukestevens.server.models.Application;
  * 
  * @author luke.stevens
  */
+@Singleton
 public class BaseServer {
 	
 	private final LoggerFactory loggerFactory;
@@ -23,7 +32,7 @@ public class BaseServer {
 	final Service internalService;
 	final String version;
 	
-	final Application application;
+	final APIApplication application;
 	
 	
 	/**
@@ -32,7 +41,8 @@ public class BaseServer {
 	 * @param version The version of the service running
 	 * @param loggerFactory A LoggerFactory to get the correct logger for this class
 	 */
-	public BaseServer(Application application, String version, LoggerFactory loggerFactory) {
+	@Inject
+	public BaseServer(APIApplication application, @AppVersion String version, LoggerFactory loggerFactory) {
 		this.version = version;
 		this.loggerFactory = loggerFactory;
 		this.logger = loggerFactory.getLogger(BaseServer.class);
@@ -89,10 +99,17 @@ public class BaseServer {
 	 * Initialises both services
 	 */
 	public void init() {
-		this.primaryService.get("/version", (req, res) -> version);
+		this.primaryService.get("/status", this::status);
 		this.primaryService.awaitInitialization();
 		this.internalService.awaitInitialization();
 		logger.info("Service started on port " + this.primaryService.port());
+	}
+	
+	Object status(Request req, Response res) {
+		JsonObject json = new JsonObject();
+		json.addProperty("name", this.application.getName());
+		json.addProperty("version", this.version);
+		return json.toString();
 	}
 	
 	/**

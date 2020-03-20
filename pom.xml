@@ -8,7 +8,8 @@
 	<name>server-lib</name>
 
 	<properties>
-		<junit.jupiter.version>5.4.0</junit.jupiter.version>
+		<lib.version>1.0.0-beta</lib.version>
+		<junit.jupiter.version>5.5.2</junit.jupiter.version>
 	</properties>
 
 	<build>
@@ -36,16 +37,40 @@
 		<dependency>
 			<groupId>uk.co.lukestevens</groupId>
 			<artifactId>base-lib</artifactId>
-			<version>1.0.0-beta</version>
-			<scope>provided</scope>
+			<version>${lib.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>uk.co.lukestevens</groupId>
 			<artifactId>db-lib</artifactId>
-			<version>1.0.0-beta</version>
-			<scope>provided</scope>
+			<version>${lib.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>uk.co.lukestevens</groupId>
+			<artifactId>config-lib</artifactId>
+			<version>${lib.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>uk.co.lukestevens</groupId>
+			<artifactId>cli-lib</artifactId>
+			<version>${lib.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>uk.co.lukestevens</groupId>
+			<artifactId>logging-lib</artifactId>
+			<version>${lib.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.google.inject/guice -->
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>4.2.2</version>
+		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/com.sparkjava/spark-core -->
 		<dependency>
@@ -85,6 +110,13 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.4.1</version>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- JUnit test dependencies -->
 		<dependency>
