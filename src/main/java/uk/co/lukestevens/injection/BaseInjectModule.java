@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.util.Modules;
 
 import uk.co.lukestevens.cli.setup.KeyBasedSetup;
 import uk.co.lukestevens.config.Config;
@@ -25,10 +26,42 @@ import uk.co.lukestevens.logging.LoggerFactory;
 import uk.co.lukestevens.server.BaseServer;
 import uk.co.lukestevens.server.models.APIApplication;
 
+/**
+ * A base injection module to make all services available via dependency injection.
+ * Binds the following services and their implementations:
+ * <ul>
+ * <li>KeyBasedSetup</li>
+ * <li>EncryptionService</li>
+ * <li>ConfigManager</li>
+ * <li>DaoProvider</li>
+ * <li>LoggerFactory</li>
+ * <li>BaseService</li>
+ * <li>Config</li>
+ * <li>SiteConfigService</li>
+ * <li>APIApplication</li>
+ * </ul>
+ * 
+ * Also binds the following values using named annotations:
+ * <ul>
+ * <li>@ConfigFile</li>
+ * <li>@EncryptionKey</li>
+ * <li>@AppVersion</li>
+ * <li>@AppName</li>
+ * </ul>
+ * 
+ * These values can be overriden using {@link Modules#override(com.google.inject.Module...)}
+ * @author Luke Stevens
+ *
+ * @param <T> The KeyBasedSetup extension this application is using
+ */
 public class BaseInjectModule<T extends KeyBasedSetup> extends AbstractModule {
 	
 	final T setup;
 	
+	/**
+	 * Creates a new injection module using the setup class for this application
+	 * @param setup The key based setup used by this application
+	 */
 	public BaseInjectModule(T setup) {
 		this.setup = setup;
 	}

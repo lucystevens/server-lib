@@ -36,8 +36,8 @@ public class BaseServer {
 	
 	
 	/**
-	 * Create a new base server configuration based off a given setup
-	 * @param setup A setup object defining the ports to run the service on
+	 * Create a new base server configuration based off an application model
+	 * @param application The application model for this application
 	 * @param version The version of the service running
 	 * @param loggerFactory A LoggerFactory to get the correct logger for this class
 	 */
@@ -105,6 +105,9 @@ public class BaseServer {
 		logger.info("Service started on port " + this.primaryService.port());
 	}
 	
+	/*
+	 * Handles the status request for this server
+	 */
 	Object status(Request req, Response res) {
 		JsonObject json = new JsonObject();
 		json.addProperty("name", this.application.getName());

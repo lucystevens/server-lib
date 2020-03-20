@@ -1,5 +1,10 @@
 package uk.co.lukestevens.server.models;
 
+/**
+ * Interface defining properties which can be applied to different application types
+ * 
+ * @author Luke Stevens
+ */
 public interface Application {
 	
 	/**
