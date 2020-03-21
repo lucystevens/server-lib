@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>uk.co.lukestevens</groupId>
 	<artifactId>server-lib</artifactId>
-	<version>1.0.0-beta</version>
+	<version>1.0.0</version>
 	<name>server-lib</name>
 
 	<properties>
-		<lib.version>1.0.0-beta</lib.version>
+		<lukestevens.lib.version>1.0.0</lukestevens.lib.version>
 		<junit.jupiter.version>5.5.2</junit.jupiter.version>
 	</properties>
 
@@ -33,35 +33,43 @@
 		</plugins>
 	</build>
 
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub lukecmstevens Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/lukecmstevens/packages</url>
+		</repository>
+	</distributionManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>uk.co.lukestevens</groupId>
 			<artifactId>base-lib</artifactId>
-			<version>${lib.version}</version>
+			<version>${lukestevens.lib.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>uk.co.lukestevens</groupId>
 			<artifactId>db-lib</artifactId>
-			<version>${lib.version}</version>
+			<version>${lukestevens.lib.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>uk.co.lukestevens</groupId>
 			<artifactId>config-lib</artifactId>
-			<version>${lib.version}</version>
+			<version>${lukestevens.lib.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>uk.co.lukestevens</groupId>
 			<artifactId>cli-lib</artifactId>
-			<version>${lib.version}</version>
+			<version>${lukestevens.lib.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>uk.co.lukestevens</groupId>
 			<artifactId>logging-lib</artifactId>
-			<version>${lib.version}</version>
+			<version>${lukestevens.lib.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.google.inject/guice -->
@@ -89,7 +97,7 @@
 		<dependency>
 			<groupId>uk.co.lukestevens</groupId>
 			<artifactId>base-lib</artifactId>
-			<version>1.0.0-beta</version>
+			<version>${lukestevens.lib.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
@@ -97,7 +105,7 @@
 		<dependency>
 			<groupId>uk.co.lukestevens</groupId>
 			<artifactId>db-lib</artifactId>
-			<version>1.0.0-beta</version>
+			<version>${lukestevens.lib.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
