@@ -3,6 +3,7 @@ package uk.co.lukestevens.server;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import spark.Request;
@@ -27,6 +28,7 @@ public class BaseServer {
 	
 	private final LoggerFactory loggerFactory;
 	private final Logger logger;
+	private final Gson gson;
 
 	final Service primaryService;
 	final Service internalService;
@@ -40,11 +42,13 @@ public class BaseServer {
 	 * @param application The application model for this application
 	 * @param version The version of the service running
 	 * @param loggerFactory A LoggerFactory to get the correct logger for this class
+	 * @param gson The gson instance to use for serialising route responses
 	 */
 	@Inject
-	public BaseServer(APIApplication application, @AppVersion String version, LoggerFactory loggerFactory) {
+	public BaseServer(APIApplication application, @AppVersion String version, LoggerFactory loggerFactory, Gson gson) {
 		this.version = version;
 		this.loggerFactory = loggerFactory;
+		this.gson = gson;
 		this.logger = loggerFactory.getLogger(BaseServer.class);
 		this.application = application;
 		
@@ -64,7 +68,7 @@ public class BaseServer {
 	 * @param route The method to call when the route is accessed
 	 */
 	public void addRoute(HttpMethod method, String path, ServiceRoute route) {
-		RouteImpl wrappedRoute = new RouteWrapper(path, route, loggerFactory);
+		RouteImpl wrappedRoute = new RouteWrapper(path, route, loggerFactory, gson);
 		this.primaryService.addRoute(method, wrappedRoute);
 	}
 	

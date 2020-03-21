@@ -4,12 +4,9 @@ package uk.co.lukestevens.server;
 import java.util.Collections;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import spark.Request;
 import spark.Response;
 import spark.RouteImpl;
-import uk.co.lukestevens.gson.GsonIgnoreExclusionStrategy;
 import uk.co.lukestevens.logging.Logger;
 import uk.co.lukestevens.logging.LoggerFactory;
 import uk.co.lukestevens.server.exceptions.ServerException;
@@ -23,7 +20,7 @@ import uk.co.lukestevens.server.exceptions.ServerException;
 public class RouteWrapper extends RouteImpl {
 	
 	private final Logger logger;
-	private final Gson gson = new GsonBuilder().setExclusionStrategies(new GsonIgnoreExclusionStrategy()).create();
+	private final Gson gson;
 	private final ServiceRoute route;
 
 	/**
@@ -31,10 +28,12 @@ public class RouteWrapper extends RouteImpl {
 	 * @param path The path to this route
 	 * @param route The API method for this route
 	 * @param loggerFactory A LoggerFactory to get the correct logger for this class
+	 * @param gson The gson instance to use for serialising route responses
 	 */
-	protected RouteWrapper(String path, ServiceRoute route, LoggerFactory loggerFactory) {
+	protected RouteWrapper(String path, ServiceRoute route, LoggerFactory loggerFactory, Gson gson) {
 		super(path);
 		this.route = route;
+		this.gson = gson;
 		this.logger = loggerFactory.getLogger(RouteWrapper.class);
 	}
 

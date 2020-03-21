@@ -2,7 +2,6 @@ package uk.co.lukestevens.server;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -83,6 +82,9 @@ public class IntegrationTest {
 		
 		assertNotNull(mock.applicationVersion);
 		assertEquals("0.0.1-TEST", mock.applicationVersion);
+		
+		assertNotNull(mock.gson);
+		assertEquals("{\"serialisedValue\":\"some-value\"}", mock.gson.toJson(new MockSerialisedClass()));
 		        
 		assertNotNull(mock.server);
 		mock.server.addRoute(HttpMethod.get, "/test", (req, res) -> "this is a test");

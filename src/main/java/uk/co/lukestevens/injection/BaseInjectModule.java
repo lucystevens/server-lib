@@ -3,8 +3,11 @@ package uk.co.lukestevens.injection;
 import java.io.File;
 import java.io.IOException;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.util.Modules;
 
 import uk.co.lukestevens.cli.setup.KeyBasedSetup;
@@ -17,6 +20,7 @@ import uk.co.lukestevens.config.annotations.ConfigFile;
 import uk.co.lukestevens.encryption.AESEncryptionService;
 import uk.co.lukestevens.encryption.EncryptionKey;
 import uk.co.lukestevens.encryption.EncryptionService;
+import uk.co.lukestevens.gson.GsonIgnoreExclusionStrategy;
 import uk.co.lukestevens.hibernate.Dao;
 import uk.co.lukestevens.hibernate.DaoProvider;
 import uk.co.lukestevens.hibernate.HibernateController;
@@ -39,6 +43,7 @@ import uk.co.lukestevens.server.models.APIApplication;
  * <li>Config</li>
  * <li>SiteConfigService</li>
  * <li>APIApplication</li>
+ * <li>Gson</li>
  * </ul>
  * 
  * Also binds the following values using named annotations:
@@ -110,6 +115,12 @@ public class BaseInjectModule<T extends KeyBasedSetup> extends AbstractModule {
 	APIApplication providesApplication(DaoProvider daoProvider, @AppName String applicationName) throws IOException {
 		Dao<APIApplication> dao = daoProvider.getDao(APIApplication.class);
 		return dao.get(QueryFilters.column("name").isEqualTo(applicationName));
+	}
+	
+	@Provides
+	@Singleton
+	Gson providesGson() {
+		return new GsonBuilder().setExclusionStrategies(new GsonIgnoreExclusionStrategy()).create();
 	}
 
 }

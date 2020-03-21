@@ -3,6 +3,8 @@ package uk.co.lukestevens.server;
 import java.io.File;
 import javax.inject.Inject;
 
+import com.google.gson.Gson;
+
 import uk.co.lukestevens.config.Config;
 import uk.co.lukestevens.config.ConfigManager;
 import uk.co.lukestevens.config.SiteConfigService;
@@ -28,12 +30,13 @@ public class MockIntegrationClass {
 	public APIApplication application;
 	public String applicationVersion;
 	public MockSetup setup;
+	public Gson gson;
 	
 	@Inject
 	public MockIntegrationClass(EncryptionService encryptionService, ConfigManager configManager,
 			DaoProvider daoProvider, LoggerFactory loggerFactory, BaseServer server, @ConfigFile File configFile,
 			@EncryptionKey String encryptionKey, Config appConfig, SiteConfigService siteConfigService,
-			APIApplication application, @AppVersion String applicationVersion, MockSetup setup) {
+			APIApplication application, @AppVersion String applicationVersion, MockSetup setup, Gson gson) {
 		this.encryptionService = encryptionService;
 		this.configManager = configManager;
 		this.daoProvider = daoProvider;
@@ -46,6 +49,7 @@ public class MockIntegrationClass {
 		this.application = application;
 		this.applicationVersion = applicationVersion;
 		this.setup = setup;
+		this.gson = gson;
 	}
 
 	
