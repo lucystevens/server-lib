@@ -46,30 +46,35 @@
 			<groupId>uk.co.lukestevens</groupId>
 			<artifactId>base-lib</artifactId>
 			<version>${lukestevens.lib.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>uk.co.lukestevens</groupId>
 			<artifactId>db-lib</artifactId>
 			<version>${lukestevens.lib.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>uk.co.lukestevens</groupId>
 			<artifactId>config-lib</artifactId>
 			<version>${lukestevens.lib.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>uk.co.lukestevens</groupId>
 			<artifactId>cli-lib</artifactId>
 			<version>${lukestevens.lib.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>uk.co.lukestevens</groupId>
 			<artifactId>logging-lib</artifactId>
 			<version>${lukestevens.lib.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.google.inject/guice -->

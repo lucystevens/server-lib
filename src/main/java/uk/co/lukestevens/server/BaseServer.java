@@ -103,7 +103,7 @@ public class BaseServer {
 	 * Initialises both services
 	 */
 	public void init() {
-		this.primaryService.get("/status", this::status);
+		this.primaryService.get("/api/status", this::status);
 		this.primaryService.awaitInitialization();
 		this.internalService.awaitInitialization();
 		logger.info("Service started on port " + this.primaryService.port());

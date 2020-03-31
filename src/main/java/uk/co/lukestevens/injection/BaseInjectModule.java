@@ -73,12 +73,21 @@ public class BaseInjectModule<T extends KeyBasedSetup> extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		bind(KeyBasedSetup.class).to(this.setup.getClass());
+		bindSetup();
 		bind(EncryptionService.class).to(AESEncryptionService.class);
 		bind(ConfigManager.class);
 		bind(DaoProvider.class).to(HibernateController.class);
 		bind(LoggerFactory.class).to(ConfiguredLoggerFactory.class);
 		bind(BaseServer.class);
+	}
+	
+	void bindSetup() {
+		if(this.setup.getClass().equals(KeyBasedSetup.class)) {
+			bind(KeyBasedSetup.class);
+		}
+		else {
+			bind(KeyBasedSetup.class).to(this.setup.getClass());
+		}
 	}
 	
 	@Provides @ConfigFile

@@ -104,7 +104,7 @@ public class IntegrationTest {
 		{
 			OkHttpClient http = new OkHttpClient();
 			Request request = new Request.Builder()
-			  .url("http://localhost:8501/status")
+			  .url("http://localhost:8501/api/status")
 			  .get()
 			  .build();
 	
