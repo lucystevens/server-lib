@@ -24,7 +24,7 @@ import uk.co.lukestevens.hibernate.HibernateController;
 import uk.co.lukestevens.injection.BaseInjectModule;
 import uk.co.lukestevens.logging.ConfiguredLoggerFactory;
 import uk.co.lukestevens.logging.loggers.ConsoleLogger;
-import uk.co.lukestevens.test.db.TestDatabase;
+import uk.co.lukestevens.testing.db.TestDatabase;
 
 public class IntegrationTest {
 	
