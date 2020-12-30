@@ -8,7 +8,7 @@ import spark.Request;
 import spark.Response;
 import spark.RouteImpl;
 import uk.co.lukestevens.logging.Logger;
-import uk.co.lukestevens.logging.LoggerFactory;
+import uk.co.lukestevens.logging.LoggingProvider;
 import uk.co.lukestevens.server.exceptions.ServerException;
 
 /**
@@ -30,11 +30,11 @@ public class RouteWrapper extends RouteImpl {
 	 * @param loggerFactory A LoggerFactory to get the correct logger for this class
 	 * @param gson The gson instance to use for serialising route responses
 	 */
-	protected RouteWrapper(String path, ServiceRoute route, LoggerFactory loggerFactory, Gson gson) {
+	protected RouteWrapper(String path, ServiceRoute route, LoggingProvider loggingProvider, Gson gson) {
 		super(path);
 		this.route = route;
 		this.gson = gson;
-		this.logger = loggerFactory.getLogger(RouteWrapper.class);
+		this.logger = loggingProvider.getLogger(RouteWrapper.class);
 	}
 
 	@Override

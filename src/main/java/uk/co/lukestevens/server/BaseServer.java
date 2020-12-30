@@ -11,10 +11,10 @@ import spark.Response;
 import spark.RouteImpl;
 import spark.Service;
 import spark.route.HttpMethod;
-import uk.co.lukestevens.config.annotations.AppVersion;
+import uk.co.lukestevens.config.ApplicationProperties;
+import uk.co.lukestevens.injection.AppPort;
 import uk.co.lukestevens.logging.Logger;
-import uk.co.lukestevens.logging.LoggerFactory;
-import uk.co.lukestevens.server.models.APIApplication;
+import uk.co.lukestevens.logging.LoggingProvider;
 
 /**
  * A base server class to be used to create Spark services
@@ -26,16 +26,12 @@ import uk.co.lukestevens.server.models.APIApplication;
 @Singleton
 public class BaseServer {
 	
-	private final LoggerFactory loggerFactory;
+	private final LoggingProvider loggingProvider;
 	private final Logger logger;
 	private final Gson gson;
+	private final ApplicationProperties appProps;
 
-	final Service primaryService;
-	final Service internalService;
-	final String version;
-	
-	final APIApplication application;
-	
+	final Service service;	
 	
 	/**
 	 * Create a new base server configuration based off an application model
@@ -45,39 +41,33 @@ public class BaseServer {
 	 * @param gson The gson instance to use for serialising route responses
 	 */
 	@Inject
-	public BaseServer(APIApplication application, @AppVersion String version, LoggerFactory loggerFactory, Gson gson) {
-		this.version = version;
-		this.loggerFactory = loggerFactory;
+	public BaseServer(@AppPort Integer port, LoggingProvider loggingProvider, ApplicationProperties appProps, Gson gson) {
+		this.loggingProvider = loggingProvider;
 		this.gson = gson;
-		this.logger = loggerFactory.getLogger(BaseServer.class);
-		this.application = application;
+		this.logger = loggingProvider.getLogger(BaseServer.class);
+		this.appProps = appProps;
 		
-		this.primaryService = Service.ignite();
-		this.primaryService.port(application.getRunningPort());
-		
-		this.internalService = Service.ignite();
-		this.internalService.port(application.getInternalPort());
-		this.enableCORS(internalService);
-		this.internalService.get("/shutdown", (req, res) -> {this.shutdown(); return "Server did not shutdown";});
+		this.service = Service.ignite();
+		this.service.port(port);
 	}
 	
-	/**
+	/**	
 	 * Adds a route to the primary service
 	 * @param method The HTTP method for this route
 	 * @param path The path to access this route
 	 * @param route The method to call when the route is accessed
 	 */
 	public void addRoute(HttpMethod method, String path, ServiceRoute route) {
-		RouteImpl wrappedRoute = new RouteWrapper(path, route, loggerFactory, gson);
-		this.primaryService.addRoute(method, wrappedRoute);
+		RouteImpl wrappedRoute = new RouteWrapper(path, route, loggingProvider, gson);
+		this.service.addRoute(method, wrappedRoute);
 	}
 	
 	/**
-	 * Enables Cross-Origin Resource Sharing for the
-	 * primary service
+	 * Enables Cross-Origin Resource Sharing for this
+	 * service
 	 */
 	public void enableCORS() {
-		this.enableCORS(primaryService);
+		this.enableCORS(service);
 	}
 	
 	/**
@@ -93,20 +83,19 @@ public class BaseServer {
 	}
 	
 	/**
-	 * @return The primary service
+	 * @return The service
 	 */
 	public Service getService() {
-		return this.primaryService;
+		return this.service;
 	}
 	
 	/**
-	 * Initialises both services
+	 * Initialises the services
 	 */
 	public void init() {
-		this.primaryService.get("/api/status", this::status);
-		this.primaryService.awaitInitialization();
-		this.internalService.awaitInitialization();
-		logger.info("Service started on port " + this.primaryService.port());
+		this.service.get("/api/status", this::status);
+		this.service.awaitInitialization();
+		logger.info("Service started on port " + this.service.port());
 	}
 	
 	/*
@@ -114,8 +103,8 @@ public class BaseServer {
 	 */
 	Object status(Request req, Response res) {
 		JsonObject json = new JsonObject();
-		json.addProperty("name", this.application.getName());
-		json.addProperty("version", this.version);
+		json.addProperty("name", this.appProps.getApplicationName());
+		json.addProperty("version", this.appProps.getApplicationVersion());
 		return json.toString();
 	}
 	
@@ -123,8 +112,7 @@ public class BaseServer {
 	 * Shuts down both services, and the application
 	 */
 	public void shutdown() {
-		this.primaryService.awaitStop();
-		this.internalService.awaitStop();
+		this.service.awaitStop();
 		System.exit(0);
 	}
 

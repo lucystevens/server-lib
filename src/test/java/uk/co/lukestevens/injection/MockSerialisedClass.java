@@ -1,4 +1,4 @@
-package uk.co.lukestevens.server;
+package uk.co.lukestevens.injection;
 
 import uk.co.lukestevens.gson.GsonIgnore;
 
