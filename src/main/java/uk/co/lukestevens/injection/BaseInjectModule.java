@@ -29,9 +29,9 @@ import uk.co.lukestevens.logging.provider.DatabaseLoggingProvider;
 import uk.co.lukestevens.server.BaseServer;
 import uk.co.lukestevens.server.setup.ServerSetup;
 
-public class BaseInjectModule extends AbstractModule {
+public abstract class BaseInjectModule extends AbstractModule {
 	
-	final ServerSetup setup;
+	protected final ServerSetup setup;
 	
 	public BaseInjectModule(ServerSetup setup) {
 		this.setup = setup;
@@ -49,9 +49,11 @@ public class BaseInjectModule extends AbstractModule {
 		bind(PropertyService.class).to(DatabasePropertyService.class);
 		bind(DaoProvider.class).to(HibernateController.class);
 		bind(BaseServer.class);
+		
+		bindRouteConfiguration();
 	}
 	
-	void bindConfig(){
+	protected void bindConfig(){
 		if(this.setup.hasConfigFile()) {
 			Config config = new FileConfig(this.setup.getConfigFile());
 			bind(Config.class).toInstance(config);
@@ -62,7 +64,7 @@ public class BaseInjectModule extends AbstractModule {
 		}
 	}
 	
-	void bindApplicationProperties() {
+	protected void bindApplicationProperties() {
 		try {
 			MavenConfig mvnConfig = new MavenConfig();
 			mvnConfig.load();
@@ -72,7 +74,7 @@ public class BaseInjectModule extends AbstractModule {
 		}
 	}
 	
-	void bindLogging() {
+	protected void bindLogging() {
 		if(this.setup.useDatabaseLogging()) {
 			bind(LoggingProvider.class).to(DatabaseLoggingProvider.class);
 		}
@@ -81,10 +83,12 @@ public class BaseInjectModule extends AbstractModule {
 		}
 	}
 	
+	protected abstract void bindRouteConfiguration();
+	
 	
 	@Provides
 	@Singleton
-	Gson providesGson() {
+	protected Gson providesGson() {
 		return new GsonBuilder().setExclusionStrategies(new GsonIgnoreExclusionStrategy()).create();
 	}
 

@@ -1,4 +1,4 @@
-package uk.co.lukestevens.server;
+package uk.co.lukestevens.server.routes;
 
 import spark.Request;
 import spark.Response;
