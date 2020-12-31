@@ -5,6 +5,7 @@ import java.util.Collections;
 import javax.inject.Inject;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import spark.Route;
 import spark.route.HttpMethod;
@@ -14,6 +15,8 @@ import uk.co.lukestevens.server.ServerResponse;
 import uk.co.lukestevens.server.exceptions.ServerException;
 
 public abstract class AbstractRouteConfiguration implements RouteConfiguration {
+	
+	public static final Object EMPTY_RESPONSE = new JsonObject();
 	
 	private static final String LOGGING_TEMPLATE = "Request received from %s: %s %s";
 	private static final String DEFAULT_ERROR_RESPONSE = "Something went wrong, try again later";
@@ -50,6 +53,8 @@ public abstract class AbstractRouteConfiguration implements RouteConfiguration {
 					logger.error(e);
 				}
 				
+				res.status(e.getHttpCode());
+				
 				// Return a Server response error
 				ServerResponse error = ServerResponse.error(e.getErrors());
 				return gson.toJson(error);
@@ -57,6 +62,8 @@ public abstract class AbstractRouteConfiguration implements RouteConfiguration {
 				
 				// Catch and log unexpected errors
 				logger.error(e);
+				
+				res.status(400);
 				
 				// Return a default Server response error
 				ServerResponse error = ServerResponse.error(
@@ -68,6 +75,18 @@ public abstract class AbstractRouteConfiguration implements RouteConfiguration {
 	
 	protected DefinedRoute GET(String path, ServiceRoute route) {
 		return new DefinedRoute(path, handleRoute(route), HttpMethod.get);
+	}
+	
+	protected DefinedRoute POST(String path, ServiceRoute route) {
+		return new DefinedRoute(path, handleRoute(route), HttpMethod.post);
+	}
+	
+	protected DefinedRoute PUT(String path, ServiceRoute route) {
+		return new DefinedRoute(path, handleRoute(route), HttpMethod.put);
+	}
+	
+	protected DefinedRoute DELETE(String path, ServiceRoute route) {
+		return new DefinedRoute(path, handleRoute(route), HttpMethod.delete);
 	}
 
 }

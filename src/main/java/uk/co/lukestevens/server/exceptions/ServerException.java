@@ -13,6 +13,17 @@ public class ServerException extends Exception {
 	private static final long serialVersionUID = 5690456456223971520L;
 	
 	/**
+	 * Creates a standard error response:<br>
+	 * This indicates there was something invalid but not unexpected
+	 * about the request. This could be a missing or invalid field
+	 * in the body, or query parameters. The server will respond with a
+	 * 200 status code, and errors in the body
+	 */
+	public static ServerExceptionBuilder invalidRequest() {
+		return new ServerExceptionBuilder(200);
+	}
+	
+	/**
 	 * Creates a 400 bad request error:<br>
 	 * The server cannot or will not process the request
 	 * due to an apparent client error (e.g., malformed request
