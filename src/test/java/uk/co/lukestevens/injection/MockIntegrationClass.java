@@ -14,6 +14,7 @@ import uk.co.lukestevens.injection.AppPort;
 import uk.co.lukestevens.jdbc.Database;
 import uk.co.lukestevens.logging.LoggingProvider;
 import uk.co.lukestevens.server.BaseServer;
+import uk.co.lukestevens.server.routes.RouteConfiguration;
 import uk.co.lukestevens.server.setup.ServerSetup;
 
 
@@ -30,11 +31,12 @@ public class MockIntegrationClass {
 	public DaoProvider daoProvider;
 	public BaseServer baseServer;
 	public Gson gson;
+	public RouteConfiguration routeConfiguration;
 	
 	@Inject
 	public MockIntegrationClass(@SetupConfig Config setupConfig, @ApplicationConfig Config applicationConfig, LoggingProvider loggingProvider,
 			ServerSetup serverSetup, @AppPort int port, ApplicationProperties applicationProperties, Database database,
-			PropertyService propertyService, DaoProvider daoProvider, BaseServer baseServer, Gson gson) {
+			PropertyService propertyService, DaoProvider daoProvider, BaseServer baseServer, Gson gson, RouteConfiguration routeConfiguration) {
 		this.setupConfig = setupConfig;
 		this.applicationConfig = applicationConfig;
 		this.loggingProvider = loggingProvider;
@@ -46,6 +48,7 @@ public class MockIntegrationClass {
 		this.daoProvider = daoProvider;
 		this.baseServer = baseServer;
 		this.gson = gson;
+		this.routeConfiguration = routeConfiguration;
 	}
 	
 	

@@ -43,6 +43,7 @@ public abstract class BaseInjectModule extends AbstractModule {
 		bindLogging();
 		bindApplicationProperties();
 		
+		bind(ConfigLoader.class);
 		bind(ServerSetup.class).toInstance(this.setup);
 		bind(Integer.class).annotatedWith(AppPort.class).toInstance(this.setup.getPort());
 		bind(Database.class).to(ConfiguredDatabase.class);
@@ -56,7 +57,8 @@ public abstract class BaseInjectModule extends AbstractModule {
 	protected void bindConfig(){
 		if(this.setup.hasConfigFile()) {
 			Config config = new FileConfig(this.setup.getConfigFile());
-			bind(Config.class).toInstance(config);
+			bind(Config.class).annotatedWith(SetupConfig.class).toInstance(config);
+			bind(Config.class).annotatedWith(ApplicationConfig.class).toInstance(config);
 		}
 		else {
 			bind(Config.class).annotatedWith(SetupConfig.class).to(EnvironmentConfig.class);
