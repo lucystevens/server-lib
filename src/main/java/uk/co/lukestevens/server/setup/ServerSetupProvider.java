@@ -8,7 +8,11 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-
+/**
+ * A provider class for parsing command line arguments into a {@link ServerSetup} object
+ * 
+ * @author Luke Stevens
+ */
 public class ServerSetupProvider {
 	
 	static final String PORT_OPT = "p";
@@ -16,6 +20,13 @@ public class ServerSetupProvider {
 	static final String CONFIG_OPT = "c";
 	static final String HELP_OPT = "h";
 	
+	/**
+	 * Parses commandline arguments into a setup object.<br/>
+	 * Also defines a help command for listing what each option does.
+	 * @param args Commandline arguments
+	 * @return A setup object, or null if help command specified.
+	 * @throws ParseException If there was an error parsing the arguments provided
+	 */
 	public ServerSetup parseCommandLine(String[] args) throws ParseException {
 		
 		// Create options object and add all fields to it

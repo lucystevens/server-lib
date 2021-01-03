@@ -15,9 +15,8 @@ import uk.co.lukestevens.logging.LoggingProvider;
 import uk.co.lukestevens.server.routes.RouteConfiguration;
 
 /**
- * A base server class to be used to create Spark services
- * on the development machine.
- * 
+ * A base server class housing the main boilerplate for HTTP
+ * services.
  * 
  * @author luke.stevens
  */
@@ -28,8 +27,15 @@ public class BaseServer {
 	private final ApplicationProperties appProps;
 	private final RouteConfiguration routeConfig;
 
-	final Service service;	
+	private final Service service;	
 	
+	/**
+	 * Creates and initialises a new BaseServer
+	 * @param port The port to run the server on
+	 * @param loggingProvider The provider to get a Logger from
+	 * @param appProps The application properties used for application name and version
+	 * @param routeConfig The specific routes to be served by this server
+	 */
 	@Inject
 	public BaseServer(@AppPort Integer port, LoggingProvider loggingProvider, ApplicationProperties appProps, RouteConfiguration routeConfig) {
 		this.logger = loggingProvider.getLogger(BaseServer.class);
@@ -61,14 +67,14 @@ public class BaseServer {
 	}
 	
 	/**
-	 * @return The service
+	 * @return The internal Spark service
 	 */
 	public Service getService() {
 		return this.service;
 	}
 	
 	/**
-	 * Initialises the services
+	 * Initialises the services using the injected RouteConfiguration
 	 */
 	public void init() {
 		// Add all routes
@@ -82,7 +88,7 @@ public class BaseServer {
 		logger.info("Service started on port " + this.service.port());
 	}
 	
-	/*
+	/**
 	 * Handles the status request for this server
 	 */
 	protected Object status(Request req, Response res) {

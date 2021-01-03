@@ -14,5 +14,6 @@ import uk.co.lukestevens.server.exceptions.ServerException;
  */
 @FunctionalInterface
 public interface ServiceRoute {
+	// TODO I don't think this class is actually needed; Route throws Exceptions too
 	Object apply(Request request, Response response) throws ServerException;
 }

@@ -9,6 +9,12 @@ import java.lang.annotation.Target;
 import java.lang.annotation.Retention;
 import javax.inject.Qualifier;
 
+/**
+ * Injection annotation for the port an application should run on (int).
+ * 
+ * @author Luke Stevens
+ *
+ */
 @Qualifier @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
 public @interface AppPort {}
 

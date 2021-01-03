@@ -20,7 +20,7 @@ public class ServerResponse {
 	
 	/**
 	 * Create an errored server response
-	 * @param errors A Map of errors representing the failure
+	 * @param errors A Map of keys to errors representing the failure
 	 * @return An errored ServerResponse
 	 */
 	public static ServerResponse error(Map<String, String> errors) {

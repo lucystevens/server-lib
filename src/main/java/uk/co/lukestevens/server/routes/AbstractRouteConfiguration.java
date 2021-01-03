@@ -14,6 +14,15 @@ import uk.co.lukestevens.logging.LoggingProvider;
 import uk.co.lukestevens.server.ServerResponse;
 import uk.co.lukestevens.server.exceptions.ServerException;
 
+/**
+ * An extension to the base route configuration class that provides some
+ * default logic for json serialisation and exception handling in routes.</br>
+ * This can be accessed by manually wrapping logic using the {@link #handleRoute(ServiceRoute)}
+ * method, or using one of the ease-of-use http methods.
+ * 
+ * @author Luke Stevens
+ *
+ */
 public abstract class AbstractRouteConfiguration implements RouteConfiguration {
 	
 	public static final Object EMPTY_RESPONSE = new JsonObject();
@@ -35,6 +44,13 @@ public abstract class AbstractRouteConfiguration implements RouteConfiguration {
 		this.logger = loggingProvider.getLogger(RouteConfiguration.class);
 	}
 
+	/**
+	 * Wraps a simple ServiceRoute to convert it to the format required by Spark.</br>
+	 * This also provides json serialisation for responses, and exception handling for the route,
+	 * returning a response with a standard format {@link ServerResponse} body.
+	 * @param route The simple ServiceRoute to wrap
+	 * @return A Spark-compatible route
+	 */
 	public Route handleRoute(ServiceRoute route) {
 		return (req, res) -> {
 			logger.debug(String.format(LOGGING_TEMPLATE, req.ip(), req.requestMethod(), req.url()));
@@ -73,18 +89,46 @@ public abstract class AbstractRouteConfiguration implements RouteConfiguration {
 		};
 	}
 	
+	/**
+	 * Create a new defined GET route
+	 * @param path The route path which is used for matching.
+	 * @param route The simple ServiceRoute implementation. This will be wrapped
+	 * by the {@link #handleRoute(ServiceRoute)} logic.
+	 * @return A DefinedRoute, ready to be added to the server
+	 */
 	protected DefinedRoute GET(String path, ServiceRoute route) {
 		return new DefinedRoute(path, handleRoute(route), HttpMethod.get);
 	}
 	
+	/**
+	 * Create a new defined POST route
+	 * @param path The route path which is used for matching.
+	 * @param route The simple ServiceRoute implementation. This will be wrapped
+	 * by the {@link #handleRoute(ServiceRoute)} logic.
+	 * @return A DefinedRoute, ready to be added to the server
+	 */
 	protected DefinedRoute POST(String path, ServiceRoute route) {
 		return new DefinedRoute(path, handleRoute(route), HttpMethod.post);
 	}
 	
+	/**
+	 * Create a new defined PUT route
+	 * @param path The route path which is used for matching.
+	 * @param route The simple ServiceRoute implementation. This will be wrapped
+	 * by the {@link #handleRoute(ServiceRoute)} logic.
+	 * @return A DefinedRoute, ready to be added to the server
+	 */
 	protected DefinedRoute PUT(String path, ServiceRoute route) {
 		return new DefinedRoute(path, handleRoute(route), HttpMethod.put);
 	}
 	
+	/**
+	 * Create a new defined DELETE route
+	 * @param path The route path which is used for matching.
+	 * @param route The simple ServiceRoute implementation. This will be wrapped
+	 * by the {@link #handleRoute(ServiceRoute)} logic.
+	 * @return A DefinedRoute, ready to be added to the server
+	 */
 	protected DefinedRoute DELETE(String path, ServiceRoute route) {
 		return new DefinedRoute(path, handleRoute(route), HttpMethod.delete);
 	}
