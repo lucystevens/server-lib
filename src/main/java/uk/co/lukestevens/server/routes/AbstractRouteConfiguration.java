@@ -17,7 +17,7 @@ import uk.co.lukestevens.server.exceptions.ServerException;
 /**
  * An extension to the base route configuration class that provides some
  * default logic for json serialisation and exception handling in routes.</br>
- * This can be accessed by manually wrapping logic using the {@link #handleRoute(ServiceRoute)}
+ * This can be accessed by manually wrapping logic using the {@link #handleRoute(Route)}
  * method, or using one of the ease-of-use http methods.
  * 
  * @author Luke Stevens
@@ -45,20 +45,20 @@ public abstract class AbstractRouteConfiguration implements RouteConfiguration {
 	}
 
 	/**
-	 * Wraps a simple ServiceRoute to convert it to the format required by Spark.</br>
+	 * Wraps a simple Route to convert it to the format required by Spark.</br>
 	 * This also provides json serialisation for responses, and exception handling for the route,
 	 * returning a response with a standard format {@link ServerResponse} body.
-	 * @param route The simple ServiceRoute to wrap
+	 * @param route The simple Route to wrap
 	 * @return A Spark-compatible route
 	 */
-	public Route handleRoute(ServiceRoute route) {
+	public Route handleRoute(Route route) {
 		return (req, res) -> {
 			logger.debug(String.format(LOGGING_TEMPLATE, req.ip(), req.requestMethod(), req.url()));
 			
 			try {
 				
 				// If method successful, convert response to JSON
-				Object response = route.apply(req, res);
+				Object response = route.handle(req, res);
 				ServerResponse success = ServerResponse.success(response);
 				return gson.toJson(success);
 				
@@ -92,44 +92,44 @@ public abstract class AbstractRouteConfiguration implements RouteConfiguration {
 	/**
 	 * Create a new defined GET route
 	 * @param path The route path which is used for matching.
-	 * @param route The simple ServiceRoute implementation. This will be wrapped
-	 * by the {@link #handleRoute(ServiceRoute)} logic.
+	 * @param route The simple Route implementation. This will be wrapped
+	 * by the {@link #handleRoute(Route)} logic.
 	 * @return A DefinedRoute, ready to be added to the server
 	 */
-	protected DefinedRoute GET(String path, ServiceRoute route) {
+	protected DefinedRoute GET(String path, Route route) {
 		return new DefinedRoute(path, handleRoute(route), HttpMethod.get);
 	}
 	
 	/**
 	 * Create a new defined POST route
 	 * @param path The route path which is used for matching.
-	 * @param route The simple ServiceRoute implementation. This will be wrapped
-	 * by the {@link #handleRoute(ServiceRoute)} logic.
+	 * @param route The simple Route implementation. This will be wrapped
+	 * by the {@link #handleRoute(Route)} logic.
 	 * @return A DefinedRoute, ready to be added to the server
 	 */
-	protected DefinedRoute POST(String path, ServiceRoute route) {
+	protected DefinedRoute POST(String path, Route route) {
 		return new DefinedRoute(path, handleRoute(route), HttpMethod.post);
 	}
 	
 	/**
 	 * Create a new defined PUT route
 	 * @param path The route path which is used for matching.
-	 * @param route The simple ServiceRoute implementation. This will be wrapped
-	 * by the {@link #handleRoute(ServiceRoute)} logic.
+	 * @param route The simple Route implementation. This will be wrapped
+	 * by the {@link #handleRoute(Route)} logic.
 	 * @return A DefinedRoute, ready to be added to the server
 	 */
-	protected DefinedRoute PUT(String path, ServiceRoute route) {
+	protected DefinedRoute PUT(String path, Route route) {
 		return new DefinedRoute(path, handleRoute(route), HttpMethod.put);
 	}
 	
 	/**
 	 * Create a new defined DELETE route
 	 * @param path The route path which is used for matching.
-	 * @param route The simple ServiceRoute implementation. This will be wrapped
-	 * by the {@link #handleRoute(ServiceRoute)} logic.
+	 * @param route The simple Route implementation. This will be wrapped
+	 * by the {@link #handleRoute(Route)} logic.
 	 * @return A DefinedRoute, ready to be added to the server
 	 */
-	protected DefinedRoute DELETE(String path, ServiceRoute route) {
+	protected DefinedRoute DELETE(String path, Route route) {
 		return new DefinedRoute(path, handleRoute(route), HttpMethod.delete);
 	}
 

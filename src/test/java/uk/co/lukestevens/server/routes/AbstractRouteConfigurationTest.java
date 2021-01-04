@@ -38,7 +38,7 @@ public class AbstractRouteConfigurationTest {
 	
 	@Test
 	public void testHandleRoute_success() throws Exception {
-		ServiceRoute route = (req, res) -> "OK";
+		Route route = (req, res) -> "OK";
 		Route sparkRoute = routeConfig.handleRoute(route);
 		
 		Request req = mockRequest();
@@ -54,7 +54,7 @@ public class AbstractRouteConfigurationTest {
 	@Test
 	public void testHandleRoute_serverExceptionWithLogging() throws Exception {
 		ServerException exception = ServerException.badRequest().logMessage("Error!").build();
-		ServiceRoute route = (req, res) -> { throw exception; };
+		Route route = (req, res) -> { throw exception; };
 		
 		Route sparkRoute = routeConfig.handleRoute(route);
 		
@@ -72,7 +72,7 @@ public class AbstractRouteConfigurationTest {
 	
 	@Test
 	public void testHandleRoute_serverExceptionWithErrors() throws Exception {
-		ServiceRoute route = (req, res) -> {
+		Route route = (req, res) -> {
 			throw ServerException.invalidRequest()
 				.withError("input", "too long")
 				.withError("image", "not a png")
@@ -96,7 +96,7 @@ public class AbstractRouteConfigurationTest {
 	@Test
 	public void testHandleRoute_generalException() throws Exception {
 		IndexOutOfBoundsException e = new IndexOutOfBoundsException("Index: 0, Size: 0");
-		ServiceRoute route = (req, res) -> { throw e; };
+		Route route = (req, res) -> { throw e; };
 		
 		Route sparkRoute = routeConfig.handleRoute(route);
 		
