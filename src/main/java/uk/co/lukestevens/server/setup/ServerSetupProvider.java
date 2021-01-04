@@ -52,7 +52,7 @@ public class ServerSetupProvider {
 		// Parse port from arguments
 		if(cmd.hasOption(PORT_OPT)) {
 			String portString = cmd.getOptionValue(PORT_OPT);
-			if(!portString.matches("//d+")) {
+			if(!portString.matches("\\d+")) {
 				throw new RuntimeException("Expected port to be a number, was instead " + portString);
 			}
 			setup.setPort(Integer.parseInt(portString));
@@ -63,7 +63,7 @@ public class ServerSetupProvider {
 		
 		// Parse config file from arguments
 		if(cmd.hasOption(CONFIG_OPT)) {
-			String configString = cmd.getOptionValue(PORT_OPT);
+			String configString = cmd.getOptionValue(CONFIG_OPT);
 			File config = new File(configString);
 			if(!config.exists()) {
 				throw new RuntimeException("Config file '" + configString + "' not found");

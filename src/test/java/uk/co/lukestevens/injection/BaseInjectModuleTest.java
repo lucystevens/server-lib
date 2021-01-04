@@ -24,6 +24,7 @@ import uk.co.lukestevens.config.models.EnvironmentConfig;
 import uk.co.lukestevens.config.models.Property;
 import uk.co.lukestevens.config.services.DatabasePropertyService;
 import uk.co.lukestevens.config.services.PropertyService;
+import uk.co.lukestevens.gson.MockSerialisedClass;
 import uk.co.lukestevens.hibernate.DaoProvider;
 import uk.co.lukestevens.hibernate.HibernateController;
 import uk.co.lukestevens.injection.BaseInjectModule;

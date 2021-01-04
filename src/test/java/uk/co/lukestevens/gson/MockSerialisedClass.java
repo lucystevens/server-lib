@@ -1,4 +1,4 @@
-package uk.co.lukestevens.injection;
+package uk.co.lukestevens.gson;
 
 import uk.co.lukestevens.gson.GsonIgnore;
 
@@ -8,5 +8,12 @@ public class MockSerialisedClass {
 	
 	@GsonIgnore
 	String ignoredValue = "ignored";
+	
+	IgnoredClass ignoredClass = new IgnoredClass();
+	
+	@GsonIgnore
+	static class IgnoredClass {
+		String anotherIgnoredValue = "ignore me!";
+	}
 
 }
