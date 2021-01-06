@@ -1,5 +1,6 @@
 package uk.co.lukestevens.server.exceptions;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Map;
  * 
  * @author luke.stevens
  */
-public class ServerException extends Exception {
+public class ServerException extends IOException {
 
 	private static final long serialVersionUID = 5690456456223971520L;
 	
