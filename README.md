@@ -1,5 +1,5 @@
 [![Workflow Status][workflow-badge]][workflow-url]
-![Version][version-badge]
+![Version][version-badge] 
 
 # server-lib
 server-lib is a Java library for reducing the boilerplate required for API services, allowing them to be built quickly, in a standardised fashion.
