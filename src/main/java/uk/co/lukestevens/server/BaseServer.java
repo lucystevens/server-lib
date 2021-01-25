@@ -9,7 +9,7 @@ import spark.Request;
 import spark.Response;
 import spark.Service;
 import uk.co.lukestevens.config.ApplicationProperties;
-import uk.co.lukestevens.injection.AppPort;
+import uk.co.lukestevens.injection.annotations.AppPort;
 import uk.co.lukestevens.logging.Logger;
 import uk.co.lukestevens.logging.LoggingProvider;
 import uk.co.lukestevens.server.routes.RouteConfiguration;

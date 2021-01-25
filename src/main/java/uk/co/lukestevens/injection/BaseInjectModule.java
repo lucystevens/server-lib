@@ -1,26 +1,24 @@
 package uk.co.lukestevens.injection;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import uk.co.lukestevens.annotations.ApplicationConfig;
-import uk.co.lukestevens.annotations.SetupConfig;
 import uk.co.lukestevens.config.ApplicationProperties;
 import uk.co.lukestevens.config.Config;
 import uk.co.lukestevens.config.models.DatabaseConfig;
 import uk.co.lukestevens.config.models.EnvironmentConfig;
-import uk.co.lukestevens.config.models.FileConfig;
 import uk.co.lukestevens.config.models.MavenConfig;
 import uk.co.lukestevens.config.services.DatabasePropertyService;
 import uk.co.lukestevens.config.services.PropertyService;
 import uk.co.lukestevens.gson.GsonIgnoreExclusionStrategy;
 import uk.co.lukestevens.hibernate.DaoProvider;
 import uk.co.lukestevens.hibernate.HibernateController;
+import uk.co.lukestevens.injection.annotations.AppPort;
+import uk.co.lukestevens.injection.annotations.DBConfig;
+import uk.co.lukestevens.injection.annotations.EnvConfig;
 import uk.co.lukestevens.jdbc.ConfiguredDatabase;
 import uk.co.lukestevens.jdbc.Database;
 import uk.co.lukestevens.logging.LoggingProvider;
@@ -28,13 +26,12 @@ import uk.co.lukestevens.logging.provider.ConsoleLoggingProvider;
 import uk.co.lukestevens.logging.provider.DatabaseLoggingProvider;
 import uk.co.lukestevens.server.BaseServer;
 import uk.co.lukestevens.server.routes.RouteConfiguration;
-import uk.co.lukestevens.server.setup.ServerSetup;
 
 /**
  * The base injection module for Http Server based applications.
- * This binds various services depending on the provided server setup;
+ * This binds various services depending on environment variables;
  * <ul>
- * <li>{@link Config} (environment, file or database) and {@link ConfigLoader}</li>
+ * <li>{@link Config} (environment and database)</li>
  * <li>{@link ApplicationProperties} for Maven builds</li>
  * <li>{@link LoggingProvider} (console or database)</li>
  * <li>Application port (via {@link AppPort} annotation)</li>
@@ -47,96 +44,79 @@ import uk.co.lukestevens.server.setup.ServerSetup;
  * superclass, with that class defining the routes to be served by the BaseServer
  * once initialised.<br/>
  * 
- * The Config classes should also be initialised using {@link ConfigLoader#initialise()}
- * before using any of the other injected services.
- * 
  * @author Luke Stevens
  */
 public abstract class BaseInjectModule extends AbstractModule {
 	
-	protected final ServerSetup setup;
-	
-	/**
-	 * Create a new injection module based of some setup arguments
-	 * @param setup An object containing basic setup arguments for the application.
-	 */
-	public BaseInjectModule(ServerSetup setup) {
-		this.setup = setup;
-	}
+	protected static final String APP_PORT_KEY = "app.port";
+	protected static final Integer APP_PORT_DEFAULT = 8000;
+	protected static final String DATABASE_LOGGING_ENABLED_KEY = "database.logging.enabled";
+	protected static final boolean DATABASE_LOGGING_ENABLED_DEFAULT = false;
 
 	@Override
 	protected void configure() {
-		bindConfig();
-		bindLogging();
-		bindApplicationProperties();
-		
-		bind(ConfigLoader.class);
-		bind(ServerSetup.class).toInstance(this.setup);
-		bind(Integer.class).annotatedWith(AppPort.class).toInstance(this.setup.getPort());
-		bind(Database.class).to(ConfiguredDatabase.class);
 		bind(PropertyService.class).to(DatabasePropertyService.class);
-		bind(DaoProvider.class).to(HibernateController.class);
 		bind(BaseServer.class);
 		
 		bindRouteConfiguration();
 	}
 	
-	// TODO some of these bind methods could be replaced with providers, for better lazy initialisation
+	@Provides @AppPort
+	@Singleton
+	protected Integer providesAppPort(@EnvConfig Config config) {
+		return config.getAsIntOrDefault(APP_PORT_KEY, APP_PORT_DEFAULT);
+	}
 	
-	/**
-	 * Binds the {@link SetupConfig} and {@link ApplicationConfig} injection
-	 * annotations based on whether an override config file has been supplied by
-	 * the ServerSetup.
-	 */
-	protected void bindConfig(){
-		if(this.setup.hasConfigFile()) {
-			Config config = new FileConfig(this.setup.getConfigFile());
-			bind(Config.class).annotatedWith(SetupConfig.class).toInstance(config);
-			bind(Config.class).annotatedWith(ApplicationConfig.class).toInstance(config);
+	@Provides
+	@Singleton
+	protected DaoProvider providesDaoProvider(@EnvConfig Config config, ApplicationProperties appProperties){
+		return new HibernateController(config, appProperties);
+	}
+	
+	@Provides
+	@Singleton
+	protected Database providesDatabase(@EnvConfig Config config) throws IOException{
+		return new ConfiguredDatabase(config);
+	}
+	
+	@Provides @EnvConfig
+	@Singleton
+	protected Config providesEnvConfig() throws IOException{
+		Config config = new EnvironmentConfig();
+		config.load();
+		return config;
+	}
+	
+	@Provides @DBConfig
+	@Singleton
+	protected Config providesDBConfig(PropertyService propertyService) throws IOException{
+		Config config = new DatabaseConfig(propertyService);
+		config.load();
+		return config;
+	}
+	
+	@Provides
+	@Singleton
+	protected ApplicationProperties providesApplicationProperties() throws IOException {
+		MavenConfig mvnConfig = new MavenConfig();
+		mvnConfig.load();
+		return mvnConfig;
+	}
+	
+	@Provides
+	@Singleton
+	protected LoggingProvider providesLogging(@EnvConfig Config config, Database db, ApplicationProperties appProperties) {
+		if(config.getAsBooleanOrDefault(DATABASE_LOGGING_ENABLED_KEY, DATABASE_LOGGING_ENABLED_DEFAULT)) {
+			return new DatabaseLoggingProvider(db, appProperties);
 		}
 		else {
-			bind(Config.class).annotatedWith(SetupConfig.class).to(EnvironmentConfig.class);
-			bind(Config.class).annotatedWith(ApplicationConfig.class).to(DatabaseConfig.class);
+			return new ConsoleLoggingProvider();
 		}
 	}
 	
-	/**
-	 * Binds the {@link ApplicationProperties} using MavenConfig. Override
-	 * if another build tool is used.
-	 */
-	protected void bindApplicationProperties() {
-		try {
-			MavenConfig mvnConfig = new MavenConfig();
-			mvnConfig.load();
-			bind(ApplicationProperties.class).toInstance(mvnConfig);
-		} catch (IOException e) {
-			throw new UncheckedIOException(e);
-		}
-	}
-	
-	/**
-	 * Binds the {@link LoggingProvider} based on the supplied
-	 * use database logging flag.
-	 */
-	protected void bindLogging() {
-		if(this.setup.useDatabaseLogging()) {
-			bind(LoggingProvider.class).to(DatabaseLoggingProvider.class);
-		}
-		else {
-			bind(LoggingProvider.class).to(ConsoleLoggingProvider.class);
-		}
-	}
-	
-	/**
-	 * Binds the specific {@link RouteConfiguration} required for this
-	 * application
-	 */
 	protected abstract void bindRouteConfiguration();
 	
-	
-	/**
-	 * @return The Gson instance to bind
-	 */
+
 	@Provides
 	@Singleton
 	protected Gson providesGson() {

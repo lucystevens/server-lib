@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -27,7 +26,6 @@ import uk.co.lukestevens.config.services.PropertyService;
 import uk.co.lukestevens.gson.MockSerialisedClass;
 import uk.co.lukestevens.hibernate.DaoProvider;
 import uk.co.lukestevens.hibernate.HibernateController;
-import uk.co.lukestevens.injection.BaseInjectModule;
 import uk.co.lukestevens.jdbc.ConfiguredDatabase;
 import uk.co.lukestevens.jdbc.Database;
 import uk.co.lukestevens.jdbc.result.DatabaseResult;
@@ -42,7 +40,6 @@ import uk.co.lukestevens.mocks.MockInjectModule;
 import uk.co.lukestevens.mocks.MockRouteConfiguration;
 import uk.co.lukestevens.server.BaseServer;
 import uk.co.lukestevens.server.routes.RouteConfiguration;
-import uk.co.lukestevens.server.setup.ServerSetup;
 import uk.co.lukestevens.testing.db.TestDatabase;
 import uk.co.lukestevens.testing.mocks.EnvironmentVariableMocker;
 
@@ -56,12 +53,13 @@ public class BaseInjectModuleTest {
 		db.executeFile("setup");
 	}
 	
+	EnvironmentVariableMocker envVariables;
+	
 	@BeforeEach
 	public void mockEnvironmentVariables() {
-		EnvironmentVariableMocker.build()
+		envVariables = EnvironmentVariableMocker.build()
 		.with(db.getProperties())
-		.with("test.config.source", "environment")
-		.mock();
+		.with("test.config.source", "environment");
 	}
 	
 	@AfterEach
@@ -69,34 +67,10 @@ public class BaseInjectModuleTest {
 		EnvironmentVariableMocker.clear();
 	}
 	
-	Injector createInjector(ServerSetup setup) throws IOException {
-		BaseInjectModule module = new MockInjectModule(setup);
-		Injector injector = Guice.createInjector(module);
-		
-		ConfigLoader configLoader = injector.getInstance(ConfigLoader.class);
-		configLoader.initialise();
-		
-		return injector;
-	}
-	
-	@Test
-	public void testInjection_configWithFile() throws IOException {
-		ServerSetup setup = new ServerSetup();
-		setup.setConfigFile(new File("src/test/resources/conf/test.conf"));
-		
-		Injector injector = this.createInjector(setup);
-		MockIntegrationClass mock = injector.getInstance(MockIntegrationClass.class);
-		
-		assertNotNull(mock);
-		assertNotNull(mock.setupConfig);
-		assertTrue(mock.setupConfig == mock.applicationConfig);
-		assertEquals("file", mock.setupConfig.getAsString("test.config.source"));
-	}
-	
 	@Test
 	public void testInjection_configWithEnvironmentVariables() throws IOException {
-		ServerSetup setup = new ServerSetup();
-		Injector injector = this.createInjector(setup);
+		envVariables.mock();
+		Injector injector = Guice.createInjector(new MockInjectModule());
 		MockIntegrationClass mock = injector.getInstance(MockIntegrationClass.class);
 		
 		assertNotNull(mock);
@@ -111,8 +85,8 @@ public class BaseInjectModuleTest {
 	
 	@Test
 	public void testInjection_loggingProviderConsole() throws IOException {
-		ServerSetup setup = new ServerSetup();
-		Injector injector = this.createInjector(setup);
+		envVariables.mock();
+		Injector injector = Guice.createInjector(new MockInjectModule());
 		LoggingProvider loggingProvider = injector.getInstance(LoggingProvider.class);
 		        
 		assertNotNull(loggingProvider);
@@ -125,10 +99,8 @@ public class BaseInjectModuleTest {
 	
 	@Test
 	public void testInjection_loggingProviderDatabase() throws IOException {
-		ServerSetup setup = new ServerSetup();
-		setup.useDatabaseLogging(true);
-		
-		Injector injector = this.createInjector(setup);
+		envVariables.with("database.logging.enabled", "true").mock();
+		Injector injector = Guice.createInjector(new MockInjectModule());
 		LoggingProvider loggingProvider = injector.getInstance(LoggingProvider.class);
 		        
 		assertNotNull(loggingProvider);
@@ -140,36 +112,25 @@ public class BaseInjectModuleTest {
 	}
 	
 	@Test
-	public void testInjection_serverSetup() throws IOException {
-		ServerSetup setup = new ServerSetup();
-		setup.setPort(9000);
-		Injector injector = this.createInjector(setup);
-		ServerSetup injectedSetup = injector.getInstance(ServerSetup.class);
-		        
-		assertTrue(setup == injectedSetup);
-	}
-	
-	@Test
 	public void testInjection_defaultPort() throws IOException {
-		ServerSetup setup = new ServerSetup();
-		Injector injector = this.createInjector(setup);
+		envVariables.mock();
+		Injector injector = Guice.createInjector(new MockInjectModule());
 		MockIntegrationClass mock = injector.getInstance(MockIntegrationClass.class);
 		assertEquals(8000, mock.port);
 	}
 	
 	@Test
 	public void testInjection_definedPort() throws IOException {
-		ServerSetup setup = new ServerSetup();
-		setup.setPort(9595);
-		Injector injector = this.createInjector(setup);
+		envVariables.with("app.port", "9595").mock();
+		Injector injector = Guice.createInjector(new MockInjectModule());
 		MockIntegrationClass mock = injector.getInstance(MockIntegrationClass.class);
 		assertEquals(9595, mock.port);
 	}
 	
 	@Test
 	public void testInjection_applicationProperties() throws IOException {
-		ServerSetup setup = new ServerSetup();
-		Injector injector = this.createInjector(setup);
+		envVariables.mock();
+		Injector injector = Guice.createInjector(new MockInjectModule());
 		ApplicationProperties appProps = injector.getInstance(ApplicationProperties.class);
 		
 		assertNotNull(appProps);
@@ -180,8 +141,8 @@ public class BaseInjectModuleTest {
 	
 	@Test
 	public void testInjection_database() throws IOException, SQLException {
-		ServerSetup setup = new ServerSetup();
-		Injector injector = this.createInjector(setup);
+		envVariables.mock();
+		Injector injector = Guice.createInjector(new MockInjectModule());
 		Database database = injector.getInstance(Database.class);
 		
 		assertNotNull(database);
@@ -193,8 +154,8 @@ public class BaseInjectModuleTest {
 	
 	@Test
 	public void testInjection_propertyService() throws IOException, SQLException {
-		ServerSetup setup = new ServerSetup();
-		Injector injector = this.createInjector(setup);
+		envVariables.mock();
+		Injector injector = Guice.createInjector(new MockInjectModule());
 		PropertyService propertyService = injector.getInstance(PropertyService.class);
 		
 		assertNotNull(propertyService);
@@ -209,8 +170,8 @@ public class BaseInjectModuleTest {
 	
 	@Test
 	public void testInjection_daoProvider() throws IOException, SQLException {
-		ServerSetup setup = new ServerSetup();
-		Injector injector = this.createInjector(setup);
+		envVariables.mock();
+		Injector injector = Guice.createInjector(new MockInjectModule());
 		DaoProvider daoProvider = injector.getInstance(DaoProvider.class);
 		
 		assertNotNull(daoProvider);
@@ -221,8 +182,8 @@ public class BaseInjectModuleTest {
 	
 	@Test
 	public void testInjection_baseServerNoPort() throws IOException {
-		ServerSetup setup = new ServerSetup();
-		Injector injector = this.createInjector(setup);
+		envVariables.mock();
+		Injector injector = Guice.createInjector(new MockInjectModule());
 		BaseServer server = injector.getInstance(BaseServer.class);
 		        
 		assertNotNull(server);
@@ -230,9 +191,8 @@ public class BaseInjectModuleTest {
 	
 	@Test
 	public void testInjection_baseServerWithPort() throws IOException {
-		ServerSetup setup = new ServerSetup();
-		setup.setPort(8001);
-		Injector injector = this.createInjector(setup);
+		envVariables.with("app.port", "8001").mock();
+		Injector injector = Guice.createInjector(new MockInjectModule());
 		BaseServer server = injector.getInstance(BaseServer.class);
 		        
 		assertNotNull(server);
@@ -242,8 +202,8 @@ public class BaseInjectModuleTest {
 	
 	@Test
 	public void testInjection_gson() throws IOException {
-		ServerSetup setup = new ServerSetup();
-		Injector injector = this.createInjector(setup);
+		envVariables.mock();
+		Injector injector = Guice.createInjector(new MockInjectModule());
 		Gson gson = injector.getInstance(Gson.class);
 		
 		assertNotNull(gson);
@@ -252,8 +212,8 @@ public class BaseInjectModuleTest {
 	
 	@Test
 	public void testInjection_routeConfiguration() throws IOException, SQLException {
-		ServerSetup setup = new ServerSetup();
-		Injector injector = this.createInjector(setup);
+		envVariables.mock();
+		Injector injector = Guice.createInjector(new MockInjectModule());
 		RouteConfiguration routeConfiguration = injector.getInstance(RouteConfiguration.class);
 		
 		assertNotNull(routeConfiguration);

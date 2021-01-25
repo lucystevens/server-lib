@@ -1,4 +1,4 @@
-package uk.co.lukestevens.injection;
+package uk.co.lukestevens.injection.annotations;
 
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.FIELD;

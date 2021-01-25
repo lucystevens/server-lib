@@ -47,19 +47,17 @@ The `BaseInjectModule` manages the provision of various necessary services inclu
 It will need to be extended to provide the required `RouteConfiguration` implementation, and to bind any other services required by
 the application (e.g. API services).
 
-To generate the `ServerSetup` object for the `BaseInjectModule` from command line arguments:
+### Config properties
 
-```
-ServerSetupProvider serverSetupProvider = new ServerSetupProvider();
-ServerSetup serverSetup = serverSetupProvider.parseCommandLine(args);
-```
+#### For database connections
+The following are mandatory properties for accessing the core database with tables for db-config, logging and application data.
+`database.url` - String. The JDBC url for the core database.
+`database.username` - String. The username for the core database.
+`database.password` - String. The password for the core database.
 
-The Config classes should be initialised using before using any of the other injected services:
-
-```
-ConfigLoader configLoader = injector.getInstance(ConfigLoader.class);
-configLoader.initialise();
-```
+#### For server application
+`database.logging.enabled` - Boolean. defines whether logs should be output to the database, or to the console. Defaults to false.
+`app.port` - Integer. The port which the http server will listen on. Defaults to 8000.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
