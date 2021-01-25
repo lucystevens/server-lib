@@ -1,12 +1,13 @@
 package uk.co.lukestevens.mocks;
 
-import uk.co.lukestevens.injection.BaseInjectModule;
+import com.google.inject.AbstractModule;
+
 import uk.co.lukestevens.server.routes.RouteConfiguration;
 
-public class MockInjectModule extends BaseInjectModule {
+public class MockApiModule extends AbstractModule {
 
 	@Override
-	protected void bindRouteConfiguration() {
+	protected void configure() {
 		bind(RouteConfiguration.class).to(MockRouteConfiguration.class);
 	}
 	
