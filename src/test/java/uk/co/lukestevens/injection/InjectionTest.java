@@ -59,7 +59,11 @@ public class InjectionTest {
 	public void mockEnvironmentVariables() {
 		envVariables = EnvironmentVariableMocker.build()
 		.with(db.getProperties())
-		.with("test.config.source", "environment");
+		.with("test.config.source", "environment")
+		.with("application.name", "server-lib-test")
+		.with("application.group", "uk.co.lukestevens")
+		.with("application.version", "2.0.0-test");
+		
 	}
 	
 	@AfterEach

@@ -8,9 +8,9 @@ import com.google.inject.Singleton;
 
 import uk.co.lukestevens.config.ApplicationProperties;
 import uk.co.lukestevens.config.Config;
+import uk.co.lukestevens.config.models.ConfiguredApplicationProperties;
 import uk.co.lukestevens.config.models.DatabaseConfig;
 import uk.co.lukestevens.config.models.EnvironmentConfig;
-import uk.co.lukestevens.config.models.MavenConfig;
 import uk.co.lukestevens.config.services.PropertyService;
 import uk.co.lukestevens.injection.annotations.DBConfig;
 import uk.co.lukestevens.injection.annotations.EnvConfig;
@@ -46,10 +46,8 @@ public class ConfigModule extends AbstractModule {
 	
 	@Provides
 	@Singleton
-	protected ApplicationProperties providesApplicationProperties() throws IOException {
-		MavenConfig mvnConfig = new MavenConfig();
-		mvnConfig.load();
-		return mvnConfig;
+	protected ApplicationProperties providesApplicationProperties(@EnvConfig Config config) throws IOException {
+		return new ConfiguredApplicationProperties(config);
 	}
 
 }
