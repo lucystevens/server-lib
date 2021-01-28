@@ -14,9 +14,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import uk.co.lukestevens.app.App;
 import uk.co.lukestevens.config.ApplicationProperties;
 import uk.co.lukestevens.config.models.DatabaseConfig;
 import uk.co.lukestevens.config.models.EnvironmentConfig;
@@ -71,20 +71,10 @@ public class InjectionTest {
 		EnvironmentVariableMocker.clear();
 	}
 	
-	Injector createInjector() {
-		return Guice.createInjector(
-			new ConfigModule(),
-			new DatabaseModule(),
-			new LoggingModule(),
-			new ServerModule(),
-			new MockApiModule()
-		);
-	}
-	
 	@Test
 	public void testInjection_configWithEnvironmentVariables() throws IOException {
 		envVariables.mock();
-		Injector injector = createInjector();
+		Injector injector = App.createInjector(new MockApiModule());
 		MockIntegrationClass mock = injector.getInstance(MockIntegrationClass.class);
 		
 		assertNotNull(mock);
@@ -100,7 +90,7 @@ public class InjectionTest {
 	@Test
 	public void testInjection_loggingProviderConsole() throws IOException {
 		envVariables.mock();
-		Injector injector = createInjector();
+		Injector injector = App.createInjector(new MockApiModule());
 		LoggingProvider loggingProvider = injector.getInstance(LoggingProvider.class);
 		        
 		assertNotNull(loggingProvider);
@@ -114,7 +104,7 @@ public class InjectionTest {
 	@Test
 	public void testInjection_loggingProviderDatabase() throws IOException {
 		envVariables.with("database.logging.enabled", "true").mock();
-		Injector injector = createInjector();
+		Injector injector = App.createInjector(new MockApiModule());
 		LoggingProvider loggingProvider = injector.getInstance(LoggingProvider.class);
 		        
 		assertNotNull(loggingProvider);
@@ -128,7 +118,7 @@ public class InjectionTest {
 	@Test
 	public void testInjection_defaultPort() throws IOException {
 		envVariables.mock();
-		Injector injector = createInjector();
+		Injector injector = App.createInjector(new MockApiModule());
 		MockIntegrationClass mock = injector.getInstance(MockIntegrationClass.class);
 		assertEquals(8000, mock.port);
 	}
@@ -136,7 +126,7 @@ public class InjectionTest {
 	@Test
 	public void testInjection_definedPort() throws IOException {
 		envVariables.with("app.port", "9595").mock();
-		Injector injector = createInjector();
+		Injector injector = App.createInjector(new MockApiModule());
 		MockIntegrationClass mock = injector.getInstance(MockIntegrationClass.class);
 		assertEquals(9595, mock.port);
 	}
@@ -144,7 +134,7 @@ public class InjectionTest {
 	@Test
 	public void testInjection_applicationProperties() throws IOException {
 		envVariables.mock();
-		Injector injector = createInjector();
+		Injector injector = App.createInjector(new MockApiModule());
 		ApplicationProperties appProps = injector.getInstance(ApplicationProperties.class);
 		
 		assertNotNull(appProps);
@@ -156,7 +146,7 @@ public class InjectionTest {
 	@Test
 	public void testInjection_database() throws IOException, SQLException {
 		envVariables.mock();
-		Injector injector = createInjector();
+		Injector injector = App.createInjector(new MockApiModule());
 		Database database = injector.getInstance(Database.class);
 		
 		assertNotNull(database);
@@ -169,7 +159,7 @@ public class InjectionTest {
 	@Test
 	public void testInjection_propertyService() throws IOException, SQLException {
 		envVariables.mock();
-		Injector injector = createInjector();
+		Injector injector = App.createInjector(new MockApiModule());
 		PropertyService propertyService = injector.getInstance(PropertyService.class);
 		
 		assertNotNull(propertyService);
@@ -185,7 +175,7 @@ public class InjectionTest {
 	@Test
 	public void testInjection_daoProvider() throws IOException, SQLException {
 		envVariables.mock();
-		Injector injector = createInjector();
+		Injector injector = App.createInjector(new MockApiModule());
 		DaoProvider daoProvider = injector.getInstance(DaoProvider.class);
 		
 		assertNotNull(daoProvider);
@@ -197,7 +187,7 @@ public class InjectionTest {
 	@Test
 	public void testInjection_baseServerNoPort() throws IOException {
 		envVariables.mock();
-		Injector injector = createInjector();
+		Injector injector = App.createInjector(new MockApiModule());
 		BaseServer server = injector.getInstance(BaseServer.class);
 		        
 		assertNotNull(server);
@@ -206,7 +196,7 @@ public class InjectionTest {
 	@Test
 	public void testInjection_baseServerWithPort() throws IOException {
 		envVariables.with("app.port", "8001").mock();
-		Injector injector = createInjector();
+		Injector injector = App.createInjector(new MockApiModule());
 		BaseServer server = injector.getInstance(BaseServer.class);
 		        
 		assertNotNull(server);
@@ -217,7 +207,7 @@ public class InjectionTest {
 	@Test
 	public void testInjection_gson() throws IOException {
 		envVariables.mock();
-		Injector injector = createInjector();
+		Injector injector = App.createInjector(new MockApiModule());
 		Gson gson = injector.getInstance(Gson.class);
 		
 		assertNotNull(gson);
@@ -227,11 +217,19 @@ public class InjectionTest {
 	@Test
 	public void testInjection_routeConfiguration() throws IOException, SQLException {
 		envVariables.mock();
-		Injector injector = createInjector();
+		Injector injector = App.createInjector(new MockApiModule());
 		RouteConfiguration routeConfiguration = injector.getInstance(RouteConfiguration.class);
 		
 		assertNotNull(routeConfiguration);
 		assertTrue(routeConfiguration instanceof MockRouteConfiguration);
 	}
 	
+	@Test
+	public void testInjection_overridenModule() {
+		envVariables.mock();
+		Injector injector = App.createInjector(new MockApiModule(), new OverrideModule());
+		
+		MockIntegrationClass mock = injector.getInstance(MockIntegrationClass.class);
+		assertEquals(10, mock.port);
+	}
 }
