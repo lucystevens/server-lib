@@ -51,13 +51,19 @@ the application (e.g. API services).
 
 #### For database connections
 The following are mandatory properties for accessing the core database with tables for db-config, logging and application data.
-`database.url` - String. The JDBC url for the core database.
-`database.username` - String. The username for the core database.
-`database.password` - String. The password for the core database.
+ - `database.url` - String. The JDBC url for the core database.
+ - `database.username` - String. The username for the core database.
+ - `database.password` - String. The password for the core database.
 
 #### For server application
-`database.logging.enabled` - Boolean. defines whether logs should be output to the database, or to the console. Defaults to false.
-`app.port` - Integer. The port which the http server will listen on. Defaults to 8000.
+ - `database.logging.enabled` - Boolean. defines whether logs should be output to the database, or to the console. Defaults to false.
+ - `logging.level` - One of DEBUG, INFO, WARNING, or ERROR. Defined the minimum level of logs that should be output. Defaults to INFO.
+ - `app.port` - Integer. The port which the http server will listen on. Defaults to 8000.
+ 
+#### Application properties
+ - `application.name` - The name of the application
+ - `application.group` - The group (package prefix) of the application
+ - `application.version` - The version of the application
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
