@@ -27,7 +27,7 @@ public class LoggingModule extends AbstractModule {
 	protected static final boolean DATABASE_LOGGING_ENABLED_DEFAULT = false;
 	
 	protected static final String LOGGER_LEVEL_KEY = "logging.level";
-	protected static final LoggerLevel LOGGER_LEVEL_DEFAULT = LoggerLevel.DEBUG;
+	protected static final LoggerLevel LOGGER_LEVEL_DEFAULT = LoggerLevel.INFO;
 
 	@Provides
 	@Singleton
