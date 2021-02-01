@@ -1,5 +1,6 @@
 package uk.co.lukestevens.server.routes;
 
+import java.net.HttpURLConnection;
 import java.util.Collections;
 
 import javax.inject.Inject;
@@ -79,7 +80,7 @@ public abstract class AbstractRouteConfiguration implements RouteConfiguration {
 				// Catch and log unexpected errors
 				logger.error(e);
 				
-				res.status(400);
+				res.status(HttpURLConnection.HTTP_BAD_REQUEST);
 				
 				// Return a default Server response error
 				ServerResponse error = ServerResponse.error(

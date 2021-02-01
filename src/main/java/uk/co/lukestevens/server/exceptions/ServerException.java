@@ -1,6 +1,7 @@
 package uk.co.lukestevens.server.exceptions;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.Map;
 
 /**
@@ -21,7 +22,7 @@ public class ServerException extends IOException {
 	 * 200 status code, and errors in the body
 	 */
 	public static ServerExceptionBuilder invalidRequest() {
-		return new ServerExceptionBuilder(200);
+		return new ServerExceptionBuilder(HttpURLConnection.HTTP_OK);
 	}
 	
 	/**
@@ -32,7 +33,7 @@ public class ServerException extends IOException {
 	 * or deceptive request routing).
 	 */
 	public static ServerExceptionBuilder badRequest() {
-		return new ServerExceptionBuilder(400);
+		return new ServerExceptionBuilder(HttpURLConnection.HTTP_BAD_REQUEST);
 	}
 	
 	
@@ -43,7 +44,7 @@ public class ServerException extends IOException {
 	 * has not yet been provided.
 	 */
 	public static ServerExceptionBuilder unauthorized() {
-		return new ServerExceptionBuilder(401);
+		return new ServerExceptionBuilder(HttpURLConnection.HTTP_UNAUTHORIZED);
 	}
 	
 	
@@ -54,7 +55,7 @@ public class ServerException extends IOException {
 	 * resource, or may need an account of some sort.
 	 */
 	public static ServerExceptionBuilder forbidden() {
-		return new ServerExceptionBuilder(403);
+		return new ServerExceptionBuilder(HttpURLConnection.HTTP_FORBIDDEN);
 	}
 	
 	
@@ -64,7 +65,7 @@ public class ServerException extends IOException {
 	 * for the target resource or is not willing to disclose that one exists.
 	 */
 	public static ServerExceptionBuilder notFound() {
-		return new ServerExceptionBuilder(404);
+		return new ServerExceptionBuilder(HttpURLConnection.HTTP_NOT_FOUND);
 	}
 	
 	
