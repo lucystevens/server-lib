@@ -48,7 +48,7 @@ public class AbstractRouteConfigurationTest {
 		String expectedJson = "{\"success\":true,\"data\":\"OK\"}";
 		assertEquals(expectedJson, actualJson);
 		
-		verify(logger).debug("Request received from 127.0.0.1: GET /api/test");
+		verify(logger).info("Request received from 127.0.0.1: GET /api/test");
 	}
 	
 	@Test
@@ -66,7 +66,7 @@ public class AbstractRouteConfigurationTest {
 		assertEquals(expectedJson, actualJson);
 		
 		verify(res).status(400);
-		verify(logger).debug("Request received from 127.0.0.1: GET /api/test");
+		verify(logger).info("Request received from 127.0.0.1: GET /api/test");
 		verify(logger).error(exception);
 	}
 	
@@ -89,7 +89,7 @@ public class AbstractRouteConfigurationTest {
 		assertEquals(expectedJson, actualJson);
 		
 		verify(res).status(200);
-		verify(logger).debug("Request received from 127.0.0.1: GET /api/test");
+		verify(logger).info("Request received from 127.0.0.1: GET /api/test");
 		verify(logger, never()).error(anyString());
 	}
 	
@@ -108,7 +108,7 @@ public class AbstractRouteConfigurationTest {
 		assertEquals(expectedJson, actualJson);
 		
 		verify(res).status(400);
-		verify(logger).debug("Request received from 127.0.0.1: GET /api/test");
+		verify(logger).info("Request received from 127.0.0.1: GET /api/test");
 		verify(logger).error(e);
 	}
 

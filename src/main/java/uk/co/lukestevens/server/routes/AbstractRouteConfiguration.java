@@ -54,7 +54,7 @@ public abstract class AbstractRouteConfiguration implements RouteConfiguration {
 	 */
 	public Route handleRoute(Route route) {
 		return (req, res) -> {
-			logger.debug(String.format(LOGGING_TEMPLATE, req.ip(), req.requestMethod(), req.url()));
+			logger.info(String.format(LOGGING_TEMPLATE, req.ip(), req.requestMethod(), req.url()));
 			
 			try {
 				
