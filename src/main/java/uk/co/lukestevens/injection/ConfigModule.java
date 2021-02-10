@@ -8,7 +8,7 @@ import com.google.inject.Singleton;
 
 import uk.co.lukestevens.config.ApplicationProperties;
 import uk.co.lukestevens.config.Config;
-import uk.co.lukestevens.config.models.ConfiguredApplicationProperties;
+import uk.co.lukestevens.config.application.ConfiguredApplicationProperties;
 import uk.co.lukestevens.config.models.DatabaseConfig;
 import uk.co.lukestevens.config.models.EnvironmentConfig;
 import uk.co.lukestevens.config.services.PropertyService;

@@ -10,11 +10,11 @@ import uk.co.lukestevens.config.ApplicationProperties;
 import uk.co.lukestevens.config.Config;
 import uk.co.lukestevens.config.services.DatabasePropertyService;
 import uk.co.lukestevens.config.services.PropertyService;
+import uk.co.lukestevens.db.Database;
 import uk.co.lukestevens.hibernate.DaoProvider;
 import uk.co.lukestevens.hibernate.HibernateController;
 import uk.co.lukestevens.injection.annotations.EnvConfig;
 import uk.co.lukestevens.jdbc.ConfiguredDatabase;
-import uk.co.lukestevens.jdbc.Database;
 
 /**
  * Injection module binding dependencies required for provisioning database services

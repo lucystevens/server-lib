@@ -6,8 +6,8 @@ import com.google.inject.Singleton;
 
 import uk.co.lukestevens.config.ApplicationProperties;
 import uk.co.lukestevens.config.Config;
+import uk.co.lukestevens.db.Database;
 import uk.co.lukestevens.injection.annotations.EnvConfig;
-import uk.co.lukestevens.jdbc.Database;
 import uk.co.lukestevens.logging.LoggerLevel;
 import uk.co.lukestevens.logging.LoggingProvider;
 import uk.co.lukestevens.logging.provider.ConsoleLoggingProvider;
