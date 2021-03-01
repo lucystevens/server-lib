@@ -1,4 +1,5 @@
-[![Workflow Status][workflow-badge]][workflow-url]
+![Develop Status][workflow-badge-develop]
+![Main Status][workflow-badge-main]
 ![Version][version-badge] 
 
 # server-lib
@@ -13,9 +14,11 @@ Install the latest version of server-lib using Maven:
 <dependency>
 	<groupId>uk.co.lukestevens</groupId>
 	<artifactId>server-lib</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
+	<version>2.0.0</version>
 </dependency>
 ```
+
+and the latest version of [base-lib][base-lib-repo]
 
 ### Github Packages Authentication
 Currently public packages on Github require authentication to be installed by Maven. Add the following repository to your project's `.m2/settings.xml`
@@ -75,10 +78,11 @@ Please make sure to update tests as appropriate.
 ## License
 [MIT][mit-license]
 
+[base-lib-repo]: https://github.com/lukecmstevens/base-lib
 [gh-package-auth]: https://docs.github.com/en/free-pro-team@latest/packages/guides/configuring-apache-maven-for-use-with-github-packages#authenticating-to-github-packages
-[workflow-badge]: https://github.com/lukecmstevens/server-lib/workflows/Maven%20Package/badge.svg?branch=develop
-[workflow-url]: https://github.com/lukecmstevens/server-lib/actions?query=workflow%3A%22Maven+Package%22
-[version-badge]: https://img.shields.io/badge/version-2.0.0--SNAPSHOT-red
+[workflow-badge-develop]: https://img.shields.io/github/workflow/status/lukecmstevens/server-lib/publish/develop?label=develop
+[workflow-badge-main]: https://img.shields.io/github/workflow/status/lukecmstevens/server-lib/release/main?label=main
+[version-badge]: https://img.shields.io/github/v/release/lukecmstevens/server-lib
 [mit-license]: https://choosealicense.com/licenses/mit/
 [template-api-repo]: https://github.com/lukecmstevens/template-api
 [spark-repo]: https://github.com/perwendel/spark
