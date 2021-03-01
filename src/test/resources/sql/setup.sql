@@ -1,48 +1,25 @@
 CREATE SCHEMA IF NOT EXISTS core;
 
-DROP TABLE IF EXISTS core.api_applications;
-DROP TABLE IF EXISTS core.site_config;
+DROP TABLE IF EXISTS core.config;
 
-CREATE TABLE core.api_applications (
-	id SERIAL PRIMARY KEY, 
-	name VARCHAR NOT NULL UNIQUE, 
-	domain VARCHAR, 
-	description VARCHAR,
-    git_repo VARCHAR NOT NULL,
-	running_port INT, 
-	upgrade_port INT, 
-	internal_port INT
-);
-
-INSERT INTO core.api_applications (
-	name, 
-	domain, 
-	description,
-    git_repo,
-	running_port, 
-	upgrade_port, 
-	internal_port
-) VALUES (
-	'server-lib-test',
-	'test.lukestevens.co.uk',
-	'Integration server for server library',
-	'N/A',
-	8501,
-	8502,
-	8503
-);
-
-CREATE TABLE core.site_config(
+CREATE TABLE core.config(
 	id SERIAL PRIMARY KEY,
 	key VARCHAR NOT NULL,
 	value VARCHAR NOT NULL,
-	site VARCHAR NOT NULL,
+	application_name VARCHAR NOT NULL,
 	refresh_rate BIGINT NOT NULL
 );
 
-INSERT INTO core.site_config
-	(key, value, site, refresh_rate) VALUES
-	('google.api.key', 'googlekey1', 'site1', 600),
-	('google.api.key', 'googlekey2', 'site2', 600),
-	('global.key', 'all-sites', '*', 600);
+INSERT INTO core.config VALUES (default, 'test.config.source', 'database',  'server-lib-test', 10);
+
+DROP TABLE IF EXISTS core.logs;
 	
+CREATE TABLE core.logs (
+	id SERIAL PRIMARY KEY,  
+	application_name VARCHAR NOT NULL, 
+	application_version VARCHAR(32), 
+	logger_name VARCHAR NOT NULL, 
+	message VARCHAR NOT NULL, 
+	severity VARCHAR(32) NOT NULL, 
+	timestamp TIMESTAMP NOT NULL
+);

@@ -21,6 +21,15 @@ public class ServerExceptionBuilder {
 	ServerExceptionBuilder(int httpCode) {
 		this.httpCode = httpCode;
 	}
+	
+	/**
+	 * Add a default error to be returned to the client by this exception under the key 'error'
+	 * @param message The error message to be displayed under the error key
+	 * @return This builder instance
+	 */
+	public ServerExceptionBuilder withError(String message) {
+		return this.withError("error", message);
+	}
 
 	/**
 	 * Add an error to be returned to the client by this exception

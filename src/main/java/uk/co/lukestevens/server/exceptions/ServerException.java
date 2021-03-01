@@ -1,5 +1,7 @@
 package uk.co.lukestevens.server.exceptions;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.Map;
 
 /**
@@ -8,9 +10,20 @@ import java.util.Map;
  * 
  * @author luke.stevens
  */
-public class ServerException extends Exception {
+public class ServerException extends IOException {
 
 	private static final long serialVersionUID = 5690456456223971520L;
+	
+	/**
+	 * Creates a standard error response:<br>
+	 * This indicates there was something invalid but not unexpected
+	 * about the request. This could be a missing or invalid field
+	 * in the body, or query parameters. The server will respond with a
+	 * 200 status code, and errors in the body
+	 */
+	public static ServerExceptionBuilder invalidRequest() {
+		return new ServerExceptionBuilder(HttpURLConnection.HTTP_OK);
+	}
 	
 	/**
 	 * Creates a 400 bad request error:<br>
@@ -20,7 +33,7 @@ public class ServerException extends Exception {
 	 * or deceptive request routing).
 	 */
 	public static ServerExceptionBuilder badRequest() {
-		return new ServerExceptionBuilder(400);
+		return new ServerExceptionBuilder(HttpURLConnection.HTTP_BAD_REQUEST);
 	}
 	
 	
@@ -31,7 +44,7 @@ public class ServerException extends Exception {
 	 * has not yet been provided.
 	 */
 	public static ServerExceptionBuilder unauthorized() {
-		return new ServerExceptionBuilder(401);
+		return new ServerExceptionBuilder(HttpURLConnection.HTTP_UNAUTHORIZED);
 	}
 	
 	
@@ -42,7 +55,7 @@ public class ServerException extends Exception {
 	 * resource, or may need an account of some sort.
 	 */
 	public static ServerExceptionBuilder forbidden() {
-		return new ServerExceptionBuilder(403);
+		return new ServerExceptionBuilder(HttpURLConnection.HTTP_FORBIDDEN);
 	}
 	
 	
@@ -52,7 +65,7 @@ public class ServerException extends Exception {
 	 * for the target resource or is not willing to disclose that one exists.
 	 */
 	public static ServerExceptionBuilder notFound() {
-		return new ServerExceptionBuilder(404);
+		return new ServerExceptionBuilder(HttpURLConnection.HTTP_NOT_FOUND);
 	}
 	
 	
