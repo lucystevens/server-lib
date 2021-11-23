@@ -1,19 +1,17 @@
 package uk.co.lukestevens.server.routes;
 
-import java.net.HttpURLConnection;
-import java.util.Collections;
-
-import javax.inject.Inject;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Route;
 import spark.route.HttpMethod;
-import uk.co.lukestevens.logging.Logger;
-import uk.co.lukestevens.logging.LoggingProvider;
 import uk.co.lukestevens.server.ServerResponse;
 import uk.co.lukestevens.server.exceptions.ServerException;
+
+import javax.inject.Inject;
+import java.net.HttpURLConnection;
+import java.util.Collections;
 
 /**
  * An extension to the base route configuration class that provides some
@@ -25,24 +23,22 @@ import uk.co.lukestevens.server.exceptions.ServerException;
  *
  */
 public abstract class AbstractRouteConfiguration implements RouteConfiguration {
-	
+
+	private static final Logger logger = LoggerFactory.getLogger(RouteConfiguration.class);
 	public static final Object EMPTY_RESPONSE = new JsonObject();
 	
 	private static final String LOGGING_TEMPLATE = "Request received from %s: %s %s";
 	private static final String DEFAULT_ERROR_RESPONSE = "Something went wrong, try again later";
-	
-	protected final Logger logger;
+
 	protected final Gson gson;
 
 	/**
 	 * Setup default route handling logic for route configuration
-	 * @param loggerFactory A LoggerFactory to get the correct logger for this class
 	 * @param gson The gson instance to use for serialising route responses
 	 */
 	@Inject
-	public AbstractRouteConfiguration(LoggingProvider loggingProvider, Gson gson) {
+	public AbstractRouteConfiguration(Gson gson) {
 		this.gson = gson;
-		this.logger = loggingProvider.getLogger(RouteConfiguration.class);
 	}
 
 	/**
@@ -67,7 +63,7 @@ public abstract class AbstractRouteConfiguration implements RouteConfiguration {
 				
 				// Otherwise log if necessary
 				if(e.shouldLog()) {
-					logger.error(e);
+					logger.error("Server error encountered", e);
 				}
 				
 				res.status(e.getHttpCode());
@@ -78,7 +74,7 @@ public abstract class AbstractRouteConfiguration implements RouteConfiguration {
 			} catch (Exception e) {
 				
 				// Catch and log unexpected errors
-				logger.error(e);
+				logger.error("Unexpected error encountered", e);
 				
 				res.status(HttpURLConnection.HTTP_BAD_REQUEST);
 				

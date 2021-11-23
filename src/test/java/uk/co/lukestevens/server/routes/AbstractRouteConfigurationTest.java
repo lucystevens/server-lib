@@ -17,15 +17,12 @@ import uk.co.lukestevens.server.exceptions.ServerException;
 public class AbstractRouteConfigurationTest {
 	
 	Gson gson;
-	Logger logger;
 	AbstractRouteConfiguration routeConfig;
-	
-	
+
 	@BeforeEach
 	public void setup() {
 		gson = new Gson();
-		logger = mock(Logger.class);
-		routeConfig = new StubbedRouteConfiguration(s -> logger, gson);
+		routeConfig = new StubbedRouteConfiguration(gson);
 	}
 	
 	Request mockRequest() {
@@ -47,8 +44,6 @@ public class AbstractRouteConfigurationTest {
 		Object actualJson = sparkRoute.handle(req, res);
 		String expectedJson = "{\"success\":true,\"data\":\"OK\"}";
 		assertEquals(expectedJson, actualJson);
-		
-		verify(logger).info("Request received from 127.0.0.1: GET /api/test");
 	}
 	
 	@Test
@@ -66,8 +61,6 @@ public class AbstractRouteConfigurationTest {
 		assertEquals(expectedJson, actualJson);
 		
 		verify(res).status(400);
-		verify(logger).info("Request received from 127.0.0.1: GET /api/test");
-		verify(logger).error(exception);
 	}
 	
 	@Test
@@ -89,8 +82,6 @@ public class AbstractRouteConfigurationTest {
 		assertEquals(expectedJson, actualJson);
 		
 		verify(res).status(200);
-		verify(logger).info("Request received from 127.0.0.1: GET /api/test");
-		verify(logger, never()).error(anyString());
 	}
 	
 	@Test
@@ -108,8 +99,6 @@ public class AbstractRouteConfigurationTest {
 		assertEquals(expectedJson, actualJson);
 		
 		verify(res).status(400);
-		verify(logger).info("Request received from 127.0.0.1: GET /api/test");
-		verify(logger).error(e);
 	}
 
 }

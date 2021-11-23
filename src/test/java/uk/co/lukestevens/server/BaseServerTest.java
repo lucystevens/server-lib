@@ -22,8 +22,7 @@ import uk.co.lukestevens.server.routes.DefinedRoute;
 import uk.co.lukestevens.server.routes.RouteConfiguration;
 
 public class BaseServerTest {
-	
-	Logger logger;
+
 	ApplicationProperties appProps;
 	RouteConfiguration routeConfig;
 	BaseServer server;
@@ -31,10 +30,9 @@ public class BaseServerTest {
 	
 	@BeforeEach
 	public void setup() {
-		this.logger = mock(Logger.class);
 		this.appProps = mock(ApplicationProperties.class);
 		this.routeConfig = mock(RouteConfiguration.class);
-		this.server = new BaseServer(8080, s -> logger, appProps, routeConfig);
+		this.server = new BaseServer(8080, appProps, routeConfig);
 	}
 	
 	@AfterEach
@@ -52,8 +50,7 @@ public class BaseServerTest {
 		
 		this.server.init();
 		assertEquals(8080, server.getService().port());
-		
-		verify(logger, times(1)).info("Service started on port 8080");
+
 		verify(routeConfig, times(1)).configureRoutes();
 		
 		assertEquals("tested", get("/api/test"));

@@ -9,8 +9,8 @@ import uk.co.lukestevens.logging.LoggingProvider;
 
 public class StubbedRouteConfiguration extends AbstractRouteConfiguration {
 
-	public StubbedRouteConfiguration(LoggingProvider loggingProvider, Gson gson) {
-		super(loggingProvider, gson);
+	public StubbedRouteConfiguration(Gson gson) {
+		super(gson);
 	}
 
 	@Override

@@ -1,3 +1,4 @@
-# Release 2.0.0
- - First public release!
- 
+# Release 3.0.0
+ - Migration to gradle
+ - Removal of dependency on other core libraries
+ - Removal of dependency on Guice

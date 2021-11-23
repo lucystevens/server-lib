@@ -1,18 +1,17 @@
 package uk.co.lukestevens.server;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import com.google.gson.JsonObject;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 import spark.Service;
 import uk.co.lukestevens.config.ApplicationProperties;
 import uk.co.lukestevens.injection.annotations.AppPort;
-import uk.co.lukestevens.logging.Logger;
-import uk.co.lukestevens.logging.LoggingProvider;
 import uk.co.lukestevens.server.routes.RouteConfiguration;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * A base server class housing the main boilerplate for HTTP
@@ -22,8 +21,10 @@ import uk.co.lukestevens.server.routes.RouteConfiguration;
  */
 @Singleton
 public class BaseServer {
-	
-	private final Logger logger;
+
+	private static final Logger logger = LoggerFactory.getLogger(BaseServer.class);
+
+
 	private final ApplicationProperties appProps;
 	private final RouteConfiguration routeConfig;
 
@@ -32,13 +33,11 @@ public class BaseServer {
 	/**
 	 * Creates and initialises a new BaseServer
 	 * @param port The port to run the server on
-	 * @param loggingProvider The provider to get a Logger from
 	 * @param appProps The application properties used for application name and version
 	 * @param routeConfig The specific routes to be served by this server
 	 */
 	@Inject
-	public BaseServer(@AppPort Integer port, LoggingProvider loggingProvider, ApplicationProperties appProps, RouteConfiguration routeConfig) {
-		this.logger = loggingProvider.getLogger(BaseServer.class);
+	public BaseServer(@AppPort Integer port, ApplicationProperties appProps, RouteConfiguration routeConfig) {
 		this.appProps = appProps;
 		this.routeConfig = routeConfig;
 		
